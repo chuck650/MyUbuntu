@@ -1,0 +1,6 @@
+---
+dependencies:
+  - role: git
+    tags:
+      - editors
+      - atom

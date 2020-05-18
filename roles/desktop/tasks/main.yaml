@@ -1,0 +1,13 @@
+---
+
+- name: Include user config
+  include_tasks: user.yaml
+
+- name: Include gdm3 config
+  include_tasks: gdm3.yaml
+
+- name: Include package installation
+  include_tasks: packages.yaml
+
+- name: Include network config
+  include_tasks: networking.yaml

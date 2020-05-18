@@ -1,0 +1,46 @@
+---
+- name: Install Atom editor
+  block:
+  # wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
+  - name: Add Atom editor repository apt-key
+    apt_key:
+      url: https://packagecloud.io/AtomEditor/atom/gpgkey
+      state: present
+    become: yes
+
+  # sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
+  - name: Add Atom Editor repository to sources.list.d
+    apt_repository:
+       repo: "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main"
+       state: present
+       filename: "atom.list"
+    become: yes
+
+  # - name: Install atom editor
+  - name: Install Atom editor
+    apt:
+      name: "atom"
+      state: latest
+    become: yes
+
+  # - name: Install atom packages with apm
+  # apm install --packages-file /media/chuck/Backup/home/chuck/.atom/package.list
+  - name: Copy package.list for apm install
+    copy:
+      src: package.list
+      dest: "{{ansible_user_dir}}/.atom/package.list"
+      owner: "{{ansible_user_id}}"
+      group: "{{ansible_user_gid | string}}"
+      mode: '0644'
+
+  # TODO: Automate this better with a custom module
+  - name: Reminder to run apm install
+    debug:
+      msg: "run 'apm install --packages-file ~/.atom/package.list' to install Atom packages"
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - editors
+    - atom

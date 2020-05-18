@@ -1,0 +1,35 @@
+---
+#  git config --global user.email "you@example.com"
+#  git config --global user.name "Your Name"
+- name: Configure Git environment
+  block:
+
+  - name: Install git client
+    apt:
+      name: "git"
+      state: latest
+    become: yes
+
+  - name: Set Git core.editor to {{core.editor}}
+    git_config:
+      name: core.editor
+      scope: global
+      value: "{{core.editor}}"
+
+  - name: Set global user.email to {{user.email}}
+    git_config:
+      name: user.email
+      scope: global
+      value: "{{user.email}}"
+
+  - name: Set global user.name to {{user.name}}
+    git_config:
+      name: user.name
+      scope: global
+      value: "{{user.name}}"
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - git

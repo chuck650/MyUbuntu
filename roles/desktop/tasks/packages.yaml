@@ -1,0 +1,29 @@
+- name: Configure software environment
+  block:
+
+  - name: Install baseline packages for my desktop
+    apt:
+      name: "{{ package }}"
+      state: latest
+    loop:
+      - python3
+      - python-netaddr
+      - zfsutils-linux
+      - npm
+      - nodejs
+      - vim
+      - tree
+      - mutt
+      - curl
+      - wget
+      - htop
+    loop_control:
+      loop_var: package
+    become: yes
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - baseline
+    - desktop

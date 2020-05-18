@@ -1,0 +1,17 @@
+---
+- name: Configure Gnome Greeter
+  block:
+
+  - name: Disable gdm3 user list
+    lineinfile:
+      path: /etc/gdm3/greeter.dconf-defaults
+      regexp: "^#{0,1}\\s*\\bdisable\\-user\\-list\\b="
+      line: "disable-user-list=true"
+    become: yes
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - baseline
+    - gdm3
