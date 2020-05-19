@@ -1,4 +1,4 @@
-- name: Configure software environment
+- name: Configure Python environment
   block:
 
   - name: Install baseline packages for my desktop
@@ -6,17 +6,17 @@
       name: "{{ package }}"
       state: latest
     loop:
-      - python3
-      - python-netaddr
+      - dconf-editor
+      - sensors-applet
       - zfsutils-linux
-      - npm
-      - nodejs
       - vim
       - tree
       - mutt
       - curl
       - wget
       - htop
+      - evolution
+      - evolution-ews
     loop_control:
       loop_var: package
     become: yes

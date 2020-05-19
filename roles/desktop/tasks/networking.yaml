@@ -11,6 +11,7 @@
       - iptables-persistent
     loop_control:
       loop_var: package
+    become: yes
 
   - name: Ensure ipv4 forwarding is permanently enabled
     lineinfile:
@@ -25,4 +26,5 @@
     - ansible_facts['distribution_version'] == ubuntu_version
   tags:
     - baseline
+    - desktop
     - networking

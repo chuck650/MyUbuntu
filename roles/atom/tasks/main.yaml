@@ -38,6 +38,12 @@
     debug:
       msg: "run 'apm install --packages-file ~/.atom/package.list' to install Atom packages"
 
+  - name: Install Atom packages
+    atom_apm:
+      name: kite
+      version: 0.184.0
+      state: present
+
   when:
     - ansible_facts['distribution'] == "Ubuntu"
     - ansible_facts['distribution_version'] == ubuntu_version

@@ -1,0 +1,31 @@
+- name: Configure software environment
+  block:
+
+  - name: Add Signal repository apt-key
+    apt_key:
+      url: https://updates.signal.org/desktop/apt/keys.asc
+      state: present
+    become: yes
+
+  - name: Add Signal repository to sources.list.d
+    apt_repository:
+       repo: "deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main"
+       state: present
+       filename: "signal-desktop.list"
+    become: yes
+
+  - name: Install Signal packages
+    apt:
+      name: "{{ package }}"
+      state: latest
+    loop:
+      - signal-desktop
+    loop_control:
+      loop_var: package
+    become: yes
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - signal

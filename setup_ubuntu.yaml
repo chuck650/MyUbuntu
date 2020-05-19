@@ -5,4 +5,8 @@
   tasks: []
   roles:
     - desktop
+    - git
     - atom
+    - python-developer
+    - nodejs-developer
+    - signal-client

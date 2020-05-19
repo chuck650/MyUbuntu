@@ -1,0 +1,19 @@
+- name: Configure software environment
+  block:
+
+  - name: Install NodeJS packages
+    apt:
+      name: "{{ package }}"
+      state: latest
+    loop:
+      - npm
+      - nodejs
+    loop_control:
+      loop_var: package
+    become: yes
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - nodejs
