@@ -1,0 +1,7 @@
+#https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+---
+
+- name: Include package installation
+  include_tasks: packages.yaml
+  tags:
+    - google-chrome

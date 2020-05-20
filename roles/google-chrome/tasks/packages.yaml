@@ -1,0 +1,31 @@
+- name: Configure Google Chrome
+  block:
+
+  - name: Add Google Chrome repository apt-key
+    apt_key:
+      url: https://dl.google.com/linux/linux_signing_key.pub
+      state: present
+    become: yes
+
+  - name: Add Google Chrome repository to sources.list.d
+    apt_repository:
+       repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
+       state: present
+       filename: "google-chrome.list"
+    become: yes
+
+  - name: Install Google Chrome packages
+    apt:
+      name: "{{ package }}"
+      state: latest
+    loop:
+      - google-chrome-stable
+    loop_control:
+      loop_var: package
+    become: yes
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - google-chrome
