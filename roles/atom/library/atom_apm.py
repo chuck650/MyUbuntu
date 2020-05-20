@@ -77,48 +77,51 @@ import os
 
 from ansible.module_utils.basic import AnsibleModule
 
-def tryInstall(name, upgrade):
-    #apmList = subprocess.check_output(['apm', 'list', '--bare', '--installed',]).strip().split('\n')
-    #for line in apmList:
-    #    if line:
-    #        if line.split('@')[0] == name:
-    #            if upgrade:
-    #                return tryUpgrade(name)
-    #            else:
-    #                return False
-    #        return install(name);
-    pass
+def install(package):
+    stdout = subprocess.check_output(['apm', 'install', '--no-color', package["name"]], encoding='utf-8')
+    print(stdout)
+    return True
 
-def install(name):
-    #subprocess.check_output(['apm', 'install', name,])
-    #return True
-    pass
-
-def tryUpgrade(name):
-    #result = subprocess.check_output(['apm', 'upgrade', '--list', '--json', name,])
-    #if json.loads(result):
-    #    return upgrade(name)
-    #else: return False
-    pass
-
-def upgrade(name):
+def upgrade(package):
     # subprocess.check_output(['apm', 'upgrade', '--no-confirm', name,])
-    # return True
-    pass
+    stdout = subprocess.check_output(['apm', 'upgrade', '--no-color', '--no-confirm', package["name"]], encoding='utf-8')
+    # print(stdout)
+    # print(stdout.split('\n')[0])
+    if stdout.split('\n')[0] == "Package Updates Available (0)":
+        return False
+    else:
+        return True
+
+def uninstall(package):
+    # subprocess.check_output(['apm', 'upgrade', '--no-confirm', name,])
+    return True
 
 def isPresent(package):
     pass
 
+def getInstalledPackage(package):
+    apmList = getInstalledPackages()
+    for pkg in apmList:
+        if pkg["name"] == package["name"]:
+            return pkg
+    return None
+
 def getInstalledPackages():
     keys = ['name','version']
     pkgs = []
-    stdout = subprocess.check_output(['apm', 'list', '--packages', '--bare', '--installed'], encoding='utf-8')
+    stdout = subprocess.check_output(['apm', 'list', '--no-color', '--packages', '--bare', '--installed'], encoding='utf-8')
     apmList = stdout.split('\n')
     for line in apmList:
         if line:
             pkg = dict(zip(keys, line.split('@')))
             pkgs.append(pkg)
     return pkgs
+
+def _version(package):
+    if 'version' in package.keys():
+        return package['version']
+    else:
+        return None
 
 def main():
 
@@ -134,13 +137,31 @@ def main():
     if module.params['version']:
         pkg["version"] = module.params['version']
 
-    apmList = getInstalledPackages()
+    ipkg = getInstalledPackage(pkg)
 
-    #import pdb; pdb.set_trace()
-    #result = tryInstall(module.params['name'], module.params['state'])
-    result = False
+    # TODO: Implement more state checks for install, uninstall, upgrade actions
+    if pkg["state"] == 'absent':
+        if ipkg is not None:
+            result = uninstall(pkg)         # Package needs uninstalling
+        else:
+            result = False                  # Package is not installed
+    elif pkg["state"] == 'present':
+        if ipkg is None:
+            result = install(pkg)           # Package needs installing
+        else:
+            desired_version = _version(pkg)
+            if desired_version is None or desired_version == ipkg['version']:
+                result = False              # Package version is satisfactory
+            else:
+                uninstall(pkg)              # Package needs version removed
+                result = install(pkg)       # Package needs version installed
+    elif pkg["state"] == 'latest':
+        result = upgrade(pkg)               # package need upgrading
+    else:
+        result = False
 
-    module.exit_json(changed=result,package=pkg,installed=apmList)
+
+    module.exit_json(changed=result,package=pkg,installed=ipkg)
 
 if __name__ == '__main__':
     main()
