@@ -1,0 +1,10 @@
+---
+
+- name: Include package installation
+  include_tasks: microk8s.yaml
+  tags:
+    - cloud-developer
+    - microk8s
+    - juju
+    - lxd
+    - openvswitch

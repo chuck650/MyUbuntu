@@ -1,0 +1,10 @@
+---
+dependencies:
+  - role: snap-pkg-manager
+    tags:
+      - cloud-developer
+      - microk8s
+      - juju
+      - lxd
+      - openvswitch
+      

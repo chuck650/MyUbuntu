@@ -1,0 +1,40 @@
+- name: Configure {{tool}} environment
+  block:
+
+  - name: Install {{tool}}
+    snap:
+      name: microk8s
+      classic: yes
+
+  - name: Microk8s: Wait until microk8s is ready and check status
+    shell: source /etc/profile.d/apps-bin-path.sh && microk8s.status --wait-ready
+    args:
+      executable: /bin/bash
+
+    # microk8s.enable dashboard dns
+  - name: Microk8s: Enable dashboard & DNS
+    shell: source /etc/profile.d/apps-bin-path.sh && microk8s.enable dashboard dns
+    args:
+      executable: /bin/bash
+
+    # microk8s.kubectl -n kube-system get secret
+    # token=$(microk8s.kubectl -n kube-system get secret | grep default-token | cut -d " " -f1)
+    # microk8s.kubectl -n kube-system describe secret $token
+
+    # microk8s.enable storage
+  - name: Microk8s status
+    shell: source /etc/profile.d/apps-bin-path.sh && microk8s.enable storage
+    args:
+      executable: /bin/bash
+
+    # microk8s.kubectl cluster-info
+    # microk8s.config
+    # microk8s.kubectl get all --all-namespaces
+    # juju bootstrap microk8s micro
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - net-tools
+  vars:
+    tool: microk8s
