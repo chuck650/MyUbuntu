@@ -7,11 +7,12 @@
       state: present
     become: yes
 
+  # .list is automatically applended to the filename
   - name: Add Google Chrome repository to sources.list.d
     apt_repository:
        repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
        state: present
-       filename: "google-chrome.list"
+       filename: "google-chrome"
     become: yes
 
   - name: Install Google Chrome packages
