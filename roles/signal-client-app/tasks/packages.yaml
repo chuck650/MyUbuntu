@@ -7,11 +7,12 @@
       state: present
     become: yes
 
+  # .list is automatically applended to the filename
   - name: Add Signal repository to sources.list.d
     apt_repository:
        repo: "deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main"
        state: present
-       filename: "signal-desktop.list"
+       filename: "signal-desktop"
     become: yes
 
   - name: Install Signal packages
