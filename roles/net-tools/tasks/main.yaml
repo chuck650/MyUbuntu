@@ -1,0 +1,7 @@
+---
+
+- name: Include package installation
+  include_tasks: nmap.yaml
+  tags:
+    - net-tools
+    - nmap

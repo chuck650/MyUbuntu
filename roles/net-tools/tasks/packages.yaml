@@ -1,0 +1,32 @@
+- name: Configure {{tool}} environment
+  block:
+
+  #- name: Add {{tool}} repository apt-key
+  #  apt_key:
+  #    url: https://updates.signal.org/desktop/apt/keys.asc
+  #    state: present
+  #  become: yes
+
+  # .list is automatically applended to the filename
+  #- name: Add {{tool}} repository to sources.list.d
+  #  apt_repository:
+  #     repo: "deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main"
+  #     state: present
+  #     filename: "{{tool}}"
+  #  become: yes
+
+  #- name: Install {{tool}}
+  #  apt:
+  #    name: "{{ package }}"
+  #    state: latest
+  #  loop:
+  #    - nmap
+  #  loop_control:
+  #    loop_var: package
+  #  become: yes
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - net-tools

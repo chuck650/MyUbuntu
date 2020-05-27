@@ -1,0 +1,12 @@
+  - name: Install nmap tools
+    apt:
+      name: "{{ package }}"
+      state: latest
+    loop:
+      - nmap
+    loop_control:
+      loop_var: package
+    become: yes
+    tags:
+      - net-tools
+      - nmap
