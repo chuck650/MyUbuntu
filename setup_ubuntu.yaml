@@ -4,10 +4,13 @@
   connection: local
   tasks: []
   roles:
-    - desktop
-    - git
-    - atom
-    - google-chrome
+    - desktop-config
+    - git-app
+    - atom-app
+    - google-chrome-app
+    - storage-tools
+    - net-tools
     - python-developer
     - nodejs-developer
-    - signal-client
+    - signal-client-app
+#    - qownnotes-app
