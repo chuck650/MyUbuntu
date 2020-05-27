@@ -1,0 +1,14 @@
+---
+- name: Install btrfs tools
+  apt:
+    name: "{{ package }}"
+    state: latest
+  loop:
+    - btrfs-progs
+    - udisks2-btrfs
+  loop_control:
+    loop_var: package
+  become: yes
+  tags:
+    - storage-tools
+    - btrfs

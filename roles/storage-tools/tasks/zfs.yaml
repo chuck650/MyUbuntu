@@ -1,0 +1,13 @@
+---
+- name: Install ZFS tools
+  apt:
+    name: "{{ package }}"
+    state: latest
+  loop:
+    - zfsutils-linux
+  loop_control:
+    loop_var: package
+  become: yes
+  tags:
+    - storage-tools
+    - zfs

@@ -1,0 +1,8 @@
+---
+
+- name: Include package installation
+  include_tasks: packages.yaml
+  tags:
+    - storage-tools
+    - zfs
+    - btrfs

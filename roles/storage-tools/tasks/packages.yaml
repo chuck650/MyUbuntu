@@ -1,0 +1,18 @@
+- name: Configure storage tools environment
+  block:
+
+  - name: Include ZFS installation
+    include_tasks: zfs.yaml
+    tags:
+      - zfs
+
+  - name: Include BTRFS installation
+    include_tasks: btrfs.yaml
+    tags:
+      - btrfs
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - storage-tools
