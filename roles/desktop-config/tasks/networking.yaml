@@ -1,0 +1,30 @@
+- name: Configure networking environment
+  block:
+
+  - name: Install baseline packages for my desktop
+    apt:
+      name: "{{ package }}"
+      state: latest
+    loop:
+      - tmux
+      - tshark
+      - iptables-persistent
+    loop_control:
+      loop_var: package
+    become: yes
+
+  - name: Ensure ipv4 forwarding is permanently enabled
+    lineinfile:
+      path: /etc/sysctl.conf
+      regexp: '^#?net.ipv4.ip_forward.*'
+      line: net.ipv4.ip_forward = 1
+    become: yes
+    notify: "Parse sysctl changes"
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - baseline
+    - desktop
+    - networking

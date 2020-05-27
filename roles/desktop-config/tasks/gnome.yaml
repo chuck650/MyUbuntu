@@ -1,0 +1,66 @@
+---
+- name: Configure Gnome environment
+  block:
+
+  - name: Install Gnome packages
+    apt:
+      name: "{{ package }}"
+      state: latest
+    loop:
+      - gnome-tweaks
+      - gnome-shell-extension-hide-veth
+      - chrome-gnome-shell
+      -
+    loop_control:
+      loop_var: package
+    become: yes
+
+  - name: Set default mode of Calculator to 'Programming'
+    dconf:
+      key: "/org/gnome/calculator/button-mode"
+      value: "'programming'"
+      state: present
+
+  - name: Show thousands seperator in Calculator
+    dconf:
+      key: "/org/gnome/calculator/show-tousands"
+      value: "true"
+      state: present
+
+  - name: Never auto-handle media on insertion
+    dconf:
+      key: "/org/gnome/desktop/media-handling/autorun-never"
+      value: "true"
+      state: present
+
+  - name: Disable user list display on login screen
+    dconf:
+      key: "/org/gnome/login-screen/disable-user-list"
+      value: "true"
+      state: present
+
+  - name: Disable F10 menu accelerator in Terminal
+    dconf:
+      key: "/org/gnome/Terminal/Legacy/Settings/menu-accelerator-enabled"
+      value: "false"
+      state: present
+
+  - name: Enable tree-view in Nautilus
+    dconf:
+      key: "/org/gnome/nautilus/list-view/use-tree-view"
+      value: "true"
+      state: present
+
+  - name: Set list-view as default Nautilus view
+    dconf:
+      key: "/org/gnome/nautilus/preferences/default-folder-viewer"
+      value: "'list-view'"
+      state: present
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - baseline
+    - desktop
+    - gnome

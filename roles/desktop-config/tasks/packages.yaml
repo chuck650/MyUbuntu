@@ -1,0 +1,30 @@
+- name: Configure Python environment
+  block:
+
+  - name: Install baseline packages for my desktop
+    apt:
+      name: "{{ package }}"
+      state: latest
+    loop:
+      - dconf-editor
+      - sensors-applet
+      - vim
+      - tree
+      - mutt
+      - curl
+      - wget
+      - htop
+      - youtube-dl
+      - rclone
+      - evolution
+      - evolution-ews
+    loop_control:
+      loop_var: package
+    become: yes
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - baseline
+    - desktop

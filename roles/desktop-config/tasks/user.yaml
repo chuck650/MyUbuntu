@@ -1,0 +1,27 @@
+---
+- name: Config user environment
+  block:
+
+  - name: Set {{ansible_user_id}} sudoers privileges
+    template:
+      src: sudoers.j2
+      dest: /etc/sudoers.d/{{ansible_user_id}}
+      owner: root
+      group: root
+      mode: '0440'
+    become: yes
+    vars:
+      user_name: "{{ansible_user_id}}"
+
+  - name: Set alternatives editor to {{alternatives.editor | basename}}
+    alternatives:
+      name: editor
+      path: "{{alternatives.editor}}"
+
+  when:
+    - ansible_facts['distribution'] == "Ubuntu"
+    - ansible_facts['distribution_version'] == ubuntu_version
+  tags:
+    - baseline
+    - desktop
+    - user
